@@ -5,38 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPT使用状态</title>
     <style>
+        /* 页面基础样式 */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(145deg, #e6e6e6, #ffffff); /* 柔和的背景渐变 */
         }
+
+        /* 容器样式 */
+        .container {
+            text-align: center;
+            background: #f0f0f0; /* 浅灰背景 */
+            padding: 30px;
+            border-radius: 20px; /* 圆角 */
+            box-shadow: 5px 5px 15px #d1d1d1, -5px -5px 15px #ffffff; /* 拟物化阴影 */
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            text-shadow: 2px 2px 5px #d1d1d1; /* 轻微文字阴影 */
+        }
+
+        /* 按钮样式 */
         button {
             padding: 15px 30px;
-            font-size: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
+            background: linear-gradient(145deg, #ffffff, #d4d4d4);
+            box-shadow: 5px 5px 15px #d1d1d1, -5px -5px 15px #ffffff; /* 拟物化按钮阴影 */
+            transition: all 0.3s ease; /* 动画效果 */
         }
+
+        button:active {
+            box-shadow: inset 5px 5px 15px #d1d1d1, inset -5px -5px 15px #ffffff; /* 点击拟物化效果 */
+        }
+
         .active {
-            background-color: green;
-            color: white;
+            color: #fff;
+            background: linear-gradient(145deg, #00b894, #00a380); /* 绿色渐变 */
         }
+
         .inactive {
-            background-color: red;
-            color: white;
+            color: #fff;
+            background: linear-gradient(145deg, #e17055, #c25c47); /* 红色渐变 */
+        }
+
+        /* 日志容器样式 */
+        .log-container {
+            margin-top: 20px;
+            height: 200px;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 15px;
+            background: linear-gradient(145deg, #e6e6e6, #ffffff);
+            box-shadow: inset 5px 5px 15px #d1d1d1, inset -5px -5px 15px #ffffff; /* 内嵌阴影 */
+            font-size: 14px;
+            color: #333;
+        }
+
+        .log-container p {
+            margin: 5px 0;
+        }
+
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
-    <h1>GPT使用状态</h1>
-    <button id="toggleButton" class="inactive" onclick="toggleButton()">状态：未激活</button>
+    <div class="container">
+        <h1>GPT使用状态</h1>
+        <button id="toggleButton" class="active" onclick="toggleButton()">状态：空闲</button>
+        <div class="log-container" id="logContainer"></div>
+    </div>
 
     <script>
-        // 获取按钮元素
+        // 获取按钮元素和日志容器
         const button = document.getElementById('toggleButton');
+        const logContainer = document.getElementById('logContainer');
 
         // 检查 localStorage 中的状态
         const buttonState = localStorage.getItem('buttonState');
+        const logEntries = JSON.parse(localStorage.getItem('logEntries')) || [];
 
-        // 如果有存储的状态，设置按钮的初始状态
+        // 初始化按钮状态和日志内容
         if (buttonState === 'active') {
             button.classList.remove('inactive');
             button.classList.add('active');
@@ -46,6 +122,7 @@
             button.classList.add('inactive');
             button.textContent = '使用中';
         }
+        updateLogContainer();
 
         // 切换按钮状态
         function toggleButton() {
@@ -59,9 +136,21 @@
                 button.classList.add('inactive');
                 button.textContent = '使用中';
                 localStorage.setItem('buttonState', 'inactive');
+
+                // 添加访问时间到日志
+                const currentTime = new Date().toLocaleString();
+                logEntries.unshift(`访问时间：${currentTime}`);
+                localStorage.setItem('logEntries', JSON.stringify(logEntries));
+                updateLogContainer();
             }
         }
-    </script>
 
+        // 更新日志容器内容
+        function updateLogContainer() {
+            logContainer.innerHTML = logEntries
+                .map(entry => `<p class="fade-in">${entry}</p>`)
+                .join('');
+        }
+    </script>
 </body>
 </html>
