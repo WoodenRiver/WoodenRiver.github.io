@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT使用状态</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .active {
+            background-color: green;
+            color: white;
+        }
+        .inactive {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>GPT使用状态</h1>
+    <button id="toggleButton" class="inactive" onclick="toggleButton()">状态：未激活</button>
+
+    <script>
+        // 获取按钮元素
+        const button = document.getElementById('toggleButton');
+
+        // 检查 localStorage 中的状态
+        const buttonState = localStorage.getItem('buttonState');
+
+        // 如果有存储的状态，设置按钮的初始状态
+        if (buttonState === 'active') {
+            button.classList.remove('inactive');
+            button.classList.add('active');
+            button.textContent = '空闲';
+        } else {
+            button.classList.remove('active');
+            button.classList.add('inactive');
+            button.textContent = '使用中';
+        }
+
+        // 切换按钮状态
+        function toggleButton() {
+            if (button.classList.contains('inactive')) {
+                button.classList.remove('inactive');
+                button.classList.add('active');
+                button.textContent = '空闲';
+                localStorage.setItem('buttonState', 'active');
+            } else {
+                button.classList.remove('active');
+                button.classList.add('inactive');
+                button.textContent = '使用中';
+                localStorage.setItem('buttonState', 'inactive');
+            }
+        }
+    </script>
+
+</body>
+</html>
